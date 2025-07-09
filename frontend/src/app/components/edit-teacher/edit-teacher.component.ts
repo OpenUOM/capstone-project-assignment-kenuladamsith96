@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationExtras } from '@angular/router';
-import {AppServiceService} from '../../app-service.service';
+import { Router } from '@angular/router';
+import { AppServiceService } from '../../app-service.service';
 
 @Component({
   selector: 'app-edit-teacher',
@@ -9,36 +9,45 @@ import {AppServiceService} from '../../app-service.service';
 })
 export class EditTeacherComponent implements OnInit {
 
-
   teacherData: any;
+  teacherId: any;
 
-
-  constructor(private service : AppServiceService, private router: Router) { }
-
-  navigation = this.router.getCurrentNavigation();
+  constructor(private service: AppServiceService, private router: Router) { }
 
   ngOnInit(): void {
-    this.getTeacherData();
-  }
+    // Get the ID from history.state
+    this.teacherId = history.state.id;
 
-  getTeacherData(){
-    let teacher = {
-      id : this.navigation.extras.state.id
+    if (this.teacherId) {
+      this.getTeacherData(this.teacherId);
+    } else {
+      console.error('No teacher id found in navigation state');
+      this.router.navigate(['/']); // Redirect or show an error page
     }
-    this.service.getOneTeacherData(teacher).subscribe((response)=>{
-      this.teacherData = response[0];
-    },(error)=>{
-      console.log('ERROR - ', error)
-    })
   }
 
-  editTeacher(values){
-    values.id = this.navigation.extras.state.id;
-    this.service.editTeacher(values).subscribe((response)=>{
-      this.teacherData = response[0];
-    },(error)=>{
-      console.log('ERROR - ', error)
-    })
+  getTeacherData(id: any) {
+    const teacher = { id: id };
+    this.service.getOneTeacherData(teacher).subscribe(
+      (response) => {
+        this.teacherData = response[0];
+      },
+      (error) => {
+        console.log('ERROR - ', error);
+      }
+    );
+  }
+
+  editTeacher(values: any) {
+    values.id = this.teacherId;
+    this.service.editTeacher(values).subscribe(
+      (response) => {
+        this.teacherData = response[0];
+      },
+      (error) => {
+        console.log('ERROR - ', error);
+      }
+    );
   }
 
 }

@@ -65,12 +65,20 @@ const addTeacher = async (id, name, age) => {
 }
 
 const updateTeacher = async (name, age, id) => {
-    const sql = `UPDATE teacher SET name=?, age=? WHERE id=?`
+    // First, get existing student data
+    const existing = await knex_db('teacher').where({ id }).first();
+
+    // Fallback to existing values if empty
+    const newName = name !== '' ? name : existing.name;
+    const newAge = age !== '' ? age : existing.age;
+
+    const sql = `UPDATE teacher SET name=?, age=? WHERE id=?`;
+
     return new Promise((resolve, reject) => {
         knex_db
-            .raw(sql, [name, age, id])
-            .then(() => {
-                resolve({status: "Successfully updated Teacher"})
+            .raw(sql, [newName, newAge, id])
+            .then((data) => {
+                resolve(data);
             })
             .catch((error) => {
                 reject(error);
@@ -135,18 +143,28 @@ const addStudent = async (id, name, age, hometown) => {
 }
 
 const updateStudent = async (name, age, hometown, id) => {
-    const sql = `UPDATE student SET name=?, age=? WHERE id=?`
+    // First, get existing student data
+    const existing = await knex_db('student').where({ id }).first();
+
+    // Fallback to existing values if empty
+    const newName = name !== '' ? name : existing.name;
+    const newAge = age !== '' ? age : existing.age;
+    const newHometown = hometown !== '' ? hometown : existing.hometown;
+
+    const sql = `UPDATE student SET name=?, age=?, hometown=? WHERE id=?`;
+
     return new Promise((resolve, reject) => {
         knex_db
-            .raw(sql, [name, age, hometown, id])
+            .raw(sql, [newName, newAge, newHometown, id])
             .then((data) => {
-                resolve({status: "Successfully updated Teacher"});
+                resolve(data);
             })
             .catch((error) => {
                 reject(error);
             });
     });
-} 
+};
+
 
 const deleteStudent = async (id) => {
     const sql = `DELETE FROM student WHERE id = ?`

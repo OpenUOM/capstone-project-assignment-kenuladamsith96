@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationExtras } from '@angular/router';
-import {AppServiceService} from '../../app-service.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { AppServiceService } from '../../app-service.service';
 
 @Component({
   selector: 'app-edit-student',
@@ -10,34 +10,47 @@ import {AppServiceService} from '../../app-service.service';
 export class EditStudentComponent implements OnInit {
 
   studentData: any;
+  studentId: any;
 
-
-  constructor(private service : AppServiceService, private router: Router) { }
-
-  navigation = this.router.getCurrentNavigation();
+  constructor(
+    private service: AppServiceService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    this.getStudentData();
-  }
+    this.studentId = history.state.id;
 
-  getStudentData(){
-    let student = {
-      id : this.navigation.extras.state.id
+    if (this.studentId) {
+      this.getStudentData(this.studentId);
+    } else {
+      console.error('No student id found in navigation state');
+      this.router.navigate(['/']); // Or show an error page
     }
-    this.service.getOneStudentData(student).subscribe((response)=>{
-      this.studentData = response[0];
-    },(error)=>{
-      console.log('ERROR - ', error)
-    })
   }
 
-  editStudent(values){
-    values.id = this.navigation.extras.state.id;
-    this.service.editStudent(values).subscribe((response)=>{
-      this.studentData = response[0];
-    },(error)=>{
-      console.log('ERROR - ', error)
-    })
+  getStudentData(id: any) {
+    let student = { id: id };
+    this.service.getOneStudentData(student).subscribe(
+      (response) => {
+        this.studentData = response[0];
+      },
+      (error) => {
+        console.log('ERROR - ', error);
+      }
+    );
+  }
+
+  editStudent(values: any) {
+    values.id = this.studentId;
+    this.service.editStudent(values).subscribe(
+      (response) => {
+        this.studentData = response[0];
+      },
+      (error) => {
+        console.log('ERROR - ', error);
+      }
+    );
   }
 
 }
