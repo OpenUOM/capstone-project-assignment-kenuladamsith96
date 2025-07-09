@@ -122,7 +122,7 @@ app.post("/deleteStudent", async function (req, res) {
 
   res.setHeader("Content-Type", "application/json");
   res.end(JSON.stringify(data));
-});
+});    
 
 app.post("/editStudent", async function (req, res) {
   let reqBody = req.body;
