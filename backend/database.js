@@ -164,6 +164,7 @@ const deleteStudent = async (id) => {
 
 module.exports = {
     readTeachers,
+    dbinitialize,
     readStudents,
     addStudent,
     addTeacher,
