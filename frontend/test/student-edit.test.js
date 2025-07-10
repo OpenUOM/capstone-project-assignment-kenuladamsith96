@@ -2,7 +2,7 @@ import { Selector } from 'testcafe';
 process.env.NODE_ENV = "test";
 
 fixture`Testing Student UI`
-    .page`http://localhost:4401`
+    .page`http://localhost:4200`
 
 test('Testing edit students', async t => {
     await t.navigateTo("/addStudent");
@@ -15,7 +15,7 @@ test('Testing edit students', async t => {
     await t.navigateTo("/student");
     await t.click("#student-edit-999999");
 
-    await t.typeText("#student-name", "Changed Student Name");
+    await t.typeText("#student-name", " Changed Student Name");
     await t.typeText("#student-age", "99");
     await t.typeText("#student-Hometown", "Hometown");
     await t.click("#student-edit");

@@ -98,20 +98,19 @@ app.post("/getStudentInfo", async function (req, res) {
 });
 
 app.post("/addStudent", async function (req, res) {
-  let reqBody = req.body;
-  console.log(
-    "Request received to add student. Req body: " + JSON.stringify(reqBody)
-  );
-  let data = await addStudent(
-    reqBody.id,
-    reqBody.name,
-    reqBody.age,
-    reqBody.hometown
-  );
+  try {
+    const { id, name, age, hometown } = req.body;
+    console.log("Request received to add student. Req body:", req.body);
 
-  res.setHeader("Content-Type", "application/json");
-  res.end(JSON.stringify(data));
+    const data = await addStudent(id, name, age, hometown);
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.error("Error adding student:", error);
+    res.status(500).json({ error: "Failed to add student" });
+  }
 });
+
 
 app.post("/deleteStudent", async function (req, res) {
   let reqBody = req.body;
